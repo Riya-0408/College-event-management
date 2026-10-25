@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evently | College Event Management</title>
+
+<style>
+:root {
+    --bg: #f5f6fc;
+    --surface: #ffffff;
+    --text: #20243a;
+    --muted: #858ba2;
+    --border: #e7e9f2;
+    --accent: #7764e8;
+    --accent-light: #efedff;
+    --green: #159b73;
+    --red: #d94f67;
+    --sidebar: #191b2e;
+    --shadow: 0 8px 28px rgba(36,39,76,.05);
+}
+body.dark {
+    --bg: #11131e;
+    --surface: #1b1e2d;
+    --text: #f1f1fa;
+    --muted: #a0a5bd;
+    --border: #303348;
+    --accent: #a397ff;
+    --accent-light: #302b4c;
+    --green: #50d6a8;
+    --red: #ff8293;
+    --sidebar: #0b0d17;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 14px;
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+.app {
+    display: grid;
+    grid-template-columns: 225px minmax(0,1fr);
+    min-height: 100vh;
+}
+.sidebar {
+    background: var(--sidebar);
+    color: white;
+    padding: 28px 17px;
+    display: flex;
+    flex-direction: column;
+}
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 0 8px 35px;
+}
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg,#a18bff,#6753dc);
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+}
+.logo-name { font-size: 19px; font-weight: 800; }
+.logo-name span { color: #a397ff; }
+.nav-label {
+    color: #8588a5;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    font-weight: 800;
+    padding: 12px;
+}
+.nav-link {
+    display: block;
+    color: #b6b8cc;
+    text-decoration: none;
+    padding: 13px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+}
+.nav-link:hover, .nav-link.active {
+    background: #302d4e;
+    color: white;
+}
+.sidebar-bottom {
+    margin-top: auto;
+    color: #a4a6bd;
+    font-size: 12px;
+    line-height: 1.8;
+    padding: 20px 10px 0;
+}
+.main { min-width: 0; }
+html {
+    scroll-behavior: smooth;
+}
+
+#dashboard,
+#events,
+#analytics,
+#registrations-section {
+    scroll-margin-top: 20px;
+}
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 30px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+.search-box { flex: 1; max-width: 500px; }
+.search-box input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+}
+.search-box input:focus { border-color: var(--accent); }
+.top-actions { display: flex; align-items: center; gap: 12px; }
+.icon-btn {
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 18px;
+}
+.profile { display: flex; align-items: center; gap: 10px; }
+.avatar {
+    display: grid;
+    place-items: center;
+    width: 39px;
+    height: 39px;
+    border-radius: 12px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 800;
+}
+.profile-name { font-size: 12px; font-weight: 700; }
+.profile-role { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.content { max-width: 1600px; margin: auto; padding: 30px; }
+.page-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 24px;
+}
+.eyebrow {
+    color: var(--accent);
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+h1 { margin: 0; font-size: 28px; letter-spacing: -.7px; }
+.page-heading p { color: var(--muted); margin: 8px 0 0; }
+.primary-btn {
+    border: 0;
+    border-radius: 10px;
+    background: var(--accent);
+    color: white;
+    padding: 12px 17px;
+    font-weight: 700;
+}
+.primary-btn:hover { filter: brightness(1.08); }
+.primary-btn:disabled { opacity: .6; }
+.hero {
+    padding: 27px 30px;
+    border-radius: 17px;
+    background: linear-gradient(115deg,#5143b8,#7966eb 65%,#a18dff);
+    color: white;
+    margin-bottom: 22px;
+}
+.hero h2 { margin: 0 0 10px; font-size: 22px; }
+.hero p { margin: 0; line-height: 1.7; color: #eeebff; }
+.hero-tag {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 7px 11px;
+    border: 1px solid #ffffff55;
+    border-radius: 20px;
+    font-size: 11px;
+}
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    gap: 16px;
+    margin-bottom: 22px;
+}
+.stat, .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    min-width: 0;
+}
+.stat-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+.stat-label { color: var(--muted); font-size: 12px; font-weight: 600; }
+.stat-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    background: var(--accent-light);
+    font-size: 18px;
+}
+.stat-number { font-size: 30px; font-weight: 800; margin-top: 17px; }
+.stat-foot { color: var(--muted); font-size: 11px; margin-top: 6px; }
+.analytics-grid {
+    display: grid;
+    grid-template-columns: minmax(0,1.6fr) minmax(250px,1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+}
+.panel-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+.panel-title { font-size: 15px; font-weight: 800; }
+.panel-subtitle { color: var(--muted); font-size: 11px; margin-top: 6px; }
+.chart-area { display: flex; height: 190px; gap: 12px; }
+.chart-y {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 25px;
+    color: var(--muted);
+    font-size: 10px;
+}
+.bar-chart {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    justify-content: space-around;
+    gap: 12px;
+    background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 44px,
+        var(--border) 45px,
+        transparent 46px
+    );
+}
+.bar-column {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 7px;
+}
+.bar-track {
+    height: 145px;
+    width: min(34px,80%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+.bar {
+    width: 100%;
+    min-height: 0;
+    border-radius: 7px 7px 2px 2px;
+    background: linear-gradient(180deg,#a597ff,#7462e6);
+    transition: height .3s;
+}
+.bar-column:nth-child(even) .bar {
+    background: linear-gradient(180deg,#73dfc0,#25b78b);
+}
+.bar-label { font-size: 10px; color: var(--muted); }
+.status-list { display: flex; flex-direction: column; gap: 20px; }
+.status-row {
+    display: grid;
+    grid-template-columns: 10px 1fr auto;
+    align-items: center;
+    gap: 10px;
+}
+.status-dot { width: 9px; height: 9px; border-radius: 3px; }
+.dot-upcoming { background: #8170ee; }
+.dot-ongoing { background: #eea54f; }
+.dot-completed { background: #29b98d; }
+.dot-cancelled { background: #dc5d70; }
+.status-name { font-size: 12px; }
+.status-count { font-weight: 800; }
+.filter-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 17px;
+}
+.filter-chip {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    border-radius: 9px;
+    padding: 9px 13px;
+    font-size: 12px;
+}
+.filter-chip.active {
+    background: var(--accent-light);
+    color: var(--accent);
+    border-color: var(--accent);
+    font-weight: 700;
+}
+.events-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+.events-head h2 { font-size: 17px; margin: 0; }
+.events-head span { font-size: 12px; color: var(--muted); }
+.event-grid {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 17px;
+}
+.event-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    overflow: hidden;
+    min-width: 0;
+    box-shadow: var(--shadow);
+}
+.event-cover {
+    height: 105px;
+    padding: 14px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    background: linear-gradient(135deg,#6c5ce7,#a69bff);
+}
+.cover-1 { background: linear-gradient(135deg,#087e8b,#5bc0be); }
+.cover-2 { background: linear-gradient(135deg,#e07a5f,#f2cc8f); }
+.cover-3 { background: linear-gradient(135deg,#6a4c93,#c77dff); }
+.cover-4 { background: linear-gradient(135deg,#2a9d8f,#a8dadc); }
+.cover-5 { background: linear-gradient(135deg,#b56576,#eaac8b); }
+.cover-symbol { color: #ffffffaa; font-size: 42px; }
+.status-pill {
+    background: #ffffffeb;
+    color: #5143b8;
+    border-radius: 20px;
+    padding: 6px 9px;
+    font-size: 10px;
+    font-weight: 800;
+}
+.event-body { padding: 17px; }
+.event-date { color: var(--accent); font-size: 11px; font-weight: 800; }
+.event-title { font-size: 16px; font-weight: 800; margin-top: 8px; overflow-wrap: anywhere; }
+.event-desc {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 9px 0 14px;
+    min-height: 38px;
+    overflow-wrap: anywhere;
+}
+.event-meta { display: grid; gap: 8px; font-size: 11px; color: var(--muted); }
+.event-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 13px;
+    border-top: 1px solid var(--border);
+}
+.organizer { font-size: 10px; color: var(--muted); }
+.card-actions { display: flex; gap: 7px; }
+.action-btn {
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface);
+    color: var(--text);
+    padding: 7px 9px;
+    font-size: 11px;
+}
+.action-btn.delete { color: var(--red); }
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 35px 20px;
+    border: 1px dashed var(--border);
+    border-radius: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+}
+dialog {
+    width: min(520px,calc(100% - 28px));
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 25px;
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 20px 80px #0003;
+}
+dialog::backdrop { background: #11132399; }
+.dialog-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.dialog-head h2 { font-size: 20px; margin: 0; }
+.close-btn {
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: 24px;
+}
+.form-grid { display: grid; gap: 14px; }
+.form-field { display: grid; gap: 7px; }
+.form-field label { font-size: 12px; font-weight: 700; }
+.form-field input, .form-field select, .form-field textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 11px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+}
+.form-field input:focus, .form-field select:focus,
+.form-field textarea:focus { border-color: var(--accent); }
+.form-field textarea { min-height: 85px; resize: vertical; }
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+.secondary-btn {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    border-radius: 9px;
+    padding: 11px 15px;
+}
+.toast {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    max-width: min(420px,calc(100% - 44px));
+    background: #20243a;
+    color: white;
+    padding: 13px 17px;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px #0002;
+    z-index: 10;
+    display: none;
+}
+.toast.show { display: block; }
+.toast.error { background: #a72f48; }
+
+@media(max-width:1100px) {
+    .stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .event-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:800px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar { min-height: auto; padding: 15px; }
+    .logo { padding-bottom: 12px; }
+    .sidebar .nav-label, .sidebar .nav-link, .sidebar-bottom { display: none; }
+    .topbar { padding: 14px 18px; }
+    .profile > div:last-child { display: none; }
+    .content { padding: 20px 16px; }
+    .analytics-grid { grid-template-columns: 1fr; }
+}
+@media(max-width:520px) {
+    .stats { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat { padding: 14px; }
+    .stat-number { font-size: 25px; }
+    .page-heading { align-items: flex-start; flex-direction: column; }
+    .event-grid { grid-template-columns: 1fr; }
+    .topbar { flex-wrap: wrap; }
+    .search-box { flex-basis: 100%; max-width: none; order: 2; }
+    .chart-area { gap: 7px; }
+    .bar-chart { gap: 5px; }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">✦</div>
+            <div class="logo-name">evently<span>.</span></div>
+        </div>
+
+        <div class="nav-label">WORKSPACE</div>
+        
+<a class="nav-link active" href="#dashboard">▦ &nbsp; Dashboard</a>
+<a class="nav-link" href="#events">✦ &nbsp; All Events</a>
+<a class="nav-link" href="#analytics">▥ &nbsp; Analytics</a>
+<a class="nav-link" href="#registrations-section">♙ &nbsp; Student Registrations</a>
+<a class="nav-link" href="#events" id="sidebarAdd">＋ &nbsp; Create Event</a>
+
+        <div class="sidebar-bottom">
+            <div>● Connected to Event API</div>
+            <p>College Event Management System</p>
+        </div>
+    </aside>
+
+    <main class="main" id="dashboard">
+        <header class="topbar">
+            <div class="search-box">
+                <input id="globalSearch" type="search"
+                    placeholder="Search events, venues, organizers...">
+            </div>
+            <div class="top-actions">
+                <button class="icon-btn" id="refreshBtn" title="Refresh events">↻</button>
+                <button class="icon-btn" id="themeToggle" title="Toggle dark mode">☾</button>
+                <div class="profile">
+                    <div class="avatar">EM</div>
+                    <div>
+                        <div class="profile-name">Event Manager</div>
+                        <div class="profile-role">Administrator</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="content">
+            <section class="page-heading">
+                <div>
+                    <div class="eyebrow">OVERVIEW</div>
+                    <h1>Dashboard</h1>
+                    <p>Manage your college events in one place.</p>
+                </div>
+                <button class="primary-btn" id="newEventBtn">＋ Create Event</button>
+            </section>
+
+            <section class="hero">
+                <h2>Make every campus moment count ✨</h2>
+                <p>Plan events, bring students together, and keep track of everything happening on campus.</p>
+                <span class="hero-tag">✦ Your event management workspace</span>
+            </section>
+
+            <section class="stats">
+                <div class="stat">
+                    <div class="stat-head">
+                        <span class="stat-label">Total Events</span>
+                        <span class="stat-icon">▦</span>
+                    </div>
+                    <div class="stat-number" id="totalCount">0</div>
+                    <div class="stat-foot">All registered events</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-head">
+                        <span class="stat-label">Upcoming</span>
+                        <span class="stat-icon">◷</span>
+                    </div>
+                    <div class="stat-number" id="upcomingCount">0</div>
+                    <div class="stat-foot">Events to look forward to</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-head">
+                        <span class="stat-label">Ongoing</span>
+                        <span class="stat-icon">✦</span>
+                    </div>
+                    <div class="stat-number" id="ongoingCount">0</div>
+                    <div class="stat-foot">Currently in progress</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-head">
+                        <span class="stat-label">Completed</span>
+                        <span class="stat-icon">✓</span>
+                    </div>
+                    <div class="stat-number" id="completedCount">0</div>
+                    <div class="stat-foot">Successfully completed</div>
+                </div>
+            </section>
+
+            <section class="analytics-grid" id="analytics">
+                <div class="panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">Event Activity</div>
+                            <div class="panel-subtitle">Events in the current and next five months</div>
+                        </div>
+                    </div>
+                    <div class="chart-area">
+                        <div class="chart-y">
+                            <span id="axisTop">4</span>
+                            <span id="axisMid">2</span>
+                            <span>0</span>
+                        </div>
+                        <div class="bar-chart" id="monthlyChart"></div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <div>
+                            <div class="panel-title">Event Status</div>
+                            <div class="panel-subtitle">Distribution of registered events</div>
+                        </div>
+                    </div>
+                    <div class="status-list">
+                        <div class="status-row">
+                            <span class="status-dot dot-upcoming"></span>
+                            <span class="status-name">Upcoming</span>
+                            <span class="status-count" id="statusUpcoming">0</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-dot dot-ongoing"></span>
+                            <span class="status-name">Ongoing</span>
+                            <span class="status-count" id="statusOngoing">0</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-dot dot-completed"></span>
+                            <span class="status-name">Completed</span>
+                            <span class="status-count" id="statusCompleted">0</span>
+                        </div>
+                        <div class="status-row">
+                            <span class="status-dot dot-cancelled"></span>
+                            <span class="status-name">Cancelled</span>
+                            <span class="status-count" id="statusCancelled">0</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="events">
+                <div class="events-head">
+                    <h2>Your Events</h2>
+                    <span id="resultCount">0 events</span>
+                </div>
+
+                <div class="filter-bar" id="filterBar">
+                    <button class="filter-chip active" data-filter="ALL">All Events</button>
+                    <button class="filter-chip" data-filter="UPCOMING">Upcoming</button>
+                    <button class="filter-chip" data-filter="ONGOING">Ongoing</button>
+                    <button class="filter-chip" data-filter="COMPLETED">Completed</button>
+                    <button class="filter-chip" data-filter="CANCELLED">Cancelled</button>
+                </div>
+
+                <div class="event-grid" id="eventGrid">
+                    <div class="empty-state">Loading events...</div>
+                </div>
+            </section>
+           <section id="registrations-section" style="margin-top:30px;">
+    <div class="events-head">
+        <h2>Student Registrations</h2>
+        <button class="primary-btn" id="refreshRegistrationsBtn" type="button">
+            Refresh
+        </button>
+    </div>
+
+    <div id="registrationCounts"
+         style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:20px;">
+        <div class="panel">Loading registration counts...</div>
+    </div>
+
+    <div class="panel" style="overflow-x:auto;">
+        <div class="panel-head">
+            <div>
+                <div class="panel-title">Registered Students</div>
+                <div class="panel-subtitle" id="registrationTotal">
+                    Loading registrations...
+                </div>
+            </div>
+        </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;">
+            <input
+                id="registrationSearch"
+                type="search"
+                placeholder="Search student name or email..."
+                aria-label="Search registrations"
+                style="flex:1;min-width:200px;padding:11px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);"
+            >
+
+            <select
+                id="registrationEventFilter"
+                aria-label="Filter registrations by event"
+                style="flex:1;min-width:180px;padding:11px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);"
+            >
+                <option value="ALL">All Events</option>
+            </select>
+
+            <button
+                type="button"
+                class="primary-btn"
+                id="exportRegistrationsBtn"
+            >
+                Export CSV
+            </button>
+        </div>
+   
+<table style="width:100%;border-collapse:collapse;text-align:left;">
+    <thead>
+        <tr>
+            <th style="padding:12px;border-bottom:1px solid var(--border);">Student Name</th>
+            <th style="padding:12px;border-bottom:1px solid var(--border);">Email</th>
+            <th style="padding:12px;border-bottom:1px solid var(--border);">Event</th>
+            <th style="padding:12px;border-bottom:1px solid var(--border);">Registration Date</th>
+            <th style="padding:12px;border-bottom:1px solid var(--border);">Actions</th>
+        </tr>
+    </thead>
+    <tbody id="registrationsTableBody">
+        <tr>
+            <td colspan="5" style="padding:15px;">Loading registrations...</td>
+        </tr>
+    </tbody>
+</table>
+     
+<div id="registrationPagination"
+     style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px;">
+
+    <div style="display:flex;align-items:center;gap:8px;">
+        <label for="registrationPageSize">Rows per page:</label>
+        <select id="registrationPageSize"
+                style="padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);">
+            <option value="10" selected>10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+        </select>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:10px;">
+        <button type="button" class="primary-btn"
+                id="registrationPrevBtn" disabled>
+            Previous
+        </button>
+
+        <span id="registrationPageInfo" aria-live="polite">
+            Page 1 of 1
+        </span>
+
+        <button type="button" class="primary-btn"
+                id="registrationNextBtn" disabled>
+            Next
+        </button>
+    </div>
+</div>
+
+    </div>
+</section> 
+        </div>
+    </main>
+</div>
+
+<dialog id="eventDialog">
+    <div class="dialog-head">
+        <h2 id="dialogTitle">Create an event</h2>
+        <button class="close-btn" id="closeDialog" type="button">×</button>
+    </div>
+
+    <form id="eventForm">
+        <input type="hidden" id="eventId">
+
+        <div class="form-grid">
+            <div class="form-field">
+                <label for="eventName">Event Name *</label>
+                <input id="eventName" maxlength="100" required
+                    placeholder="e.g. Annual College Fest">
+            </div>
+
+            <div class="form-field">
+                <label for="eventDate">Event Date *</label>
+                <input id="eventDate" type="date" required>
+            </div>
+
+            <div class="form-field">
+                <label for="venue">Venue *</label>
+                <input id="venue" maxlength="150" required
+                    placeholder="e.g. Main Sports Ground">
+            </div>
+
+            <div class="form-field">
+                <label for="organizer">Organizer</label>
+                <input id="organizer" maxlength="100"
+                    placeholder="e.g. Student Council">
+            </div>
+
+            <div class="form-field">
+                <label for="status">Status</label>
+                <select id="status">
+                    <option value="UPCOMING">Upcoming</option>
+                    <option value="ONGOING">Ongoing</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="CANCELLED">Cancelled</option>
+                </select>
+            </div>
+
+            <div class="form-field">
+                <label for="description">Description</label>
+                <textarea id="description" maxlength="500"
+                    placeholder="Tell us about this event..."></textarea>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="secondary-btn" id="cancelForm" type="button">Cancel</button>
+            <button class="primary-btn" id="saveBtn" type="submit">Create Event</button>
+        </div>
+    </form>
+</dialog>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+"use strict";
+
+const API_URL = "/api/events";
+
+let events = [];
+let activeFilter = "ALL";
+let toastTimer;
+
+const $ = id => document.getElementById(id);
+
+function normalizeStatus(status) {
+    const value = String(status || "UPCOMING").toUpperCase();
+    return ["UPCOMING", "ONGOING", "COMPLETED", "CANCELLED"].includes(value)
+        ? value : "UPCOMING";
+}
+
+function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[character]);
+}
+
+function parseDate(value) {
+    if (!value) return null;
+
+    // Read YYYY-MM-DD as a local calendar date.
+    const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+    if (match) {
+        return new Date(
+            Number(match[1]),
+            Number(match[2]) - 1,
+            Number(match[3])
+        );
+    }
+
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function formatShortDate(value) {
+    const date = parseDate(value);
+    if (!date) return "Date not specified";
+
+    return date.toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    });
+}
+
+function showToast(message, isError = false) {
+    const toast = $("toast");
+    toast.textContent = message;
+    toast.classList.toggle("error", isError);
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 3500);
+}
+
+
+async function apiRequest(url, options = {}) {
+    const response = await fetch(url, options);
+    const responseText = await response.text();
+
+    if (!response.ok) {
+        let message = `HTTP ${response.status}`;
+
+        if (responseText) {
+            try {
+                const errorData = JSON.parse(responseText);
+                message += ": " + (
+                    errorData.message ||
+                    errorData.error ||
+                    responseText
+                );
+            } catch (_) {
+                message += ": " + responseText;
+            }
+        }
+
+        throw new Error(message);
+    }
+
+    if (!responseText) {
+        return null;
+    }
+
+    // Support both JSON and plain-text responses.
+    try {
+        return JSON.parse(responseText);
+    } catch (_) {
+        return responseText;
+    }
+}
+
+function updateStatistics() {
+    const counts = {
+        UPCOMING: 0,
+        ONGOING: 0,
+        COMPLETED: 0,
+        CANCELLED: 0
+    };
+
+    events.forEach(event => counts[normalizeStatus(event.status)]++);
+
+    $("totalCount").textContent = events.length;
+    $("upcomingCount").textContent = counts.UPCOMING;
+    $("ongoingCount").textContent = counts.ONGOING;
+    $("completedCount").textContent = counts.COMPLETED;
+
+    $("statusUpcoming").textContent = counts.UPCOMING;
+    $("statusOngoing").textContent = counts.ONGOING;
+    $("statusCompleted").textContent = counts.COMPLETED;
+    $("statusCancelled").textContent = counts.CANCELLED;
+}
+
+function renderMonthlyChart() {
+    const now = new Date();
+    const months = [];
+
+    // Show the current month plus the following five months.
+    for (let i = 0; i < 6; i++) {
+        months.push(
+            new Date(now.getFullYear(), now.getMonth() + i, 1)
+        );
+    }
+
+    const counts = months.map(month => {
+        return events.filter(event => {
+            const date = parseDate(event.eventDate);
+            return date &&
+                date.getFullYear() === month.getFullYear() &&
+                date.getMonth() === month.getMonth();
+        }).length;
+    });
+
+    const maximum = Math.max(4, ...counts);
+    $("axisTop").textContent = maximum;
+    $("axisMid").textContent = Math.ceil(maximum / 2);
+
+    $("monthlyChart").innerHTML = months.map((month, index) => {
+        const height = counts[index] === 0
+            ? 0
+            : Math.max(5, (counts[index] / maximum) * 100);
+
+        const label = month.toLocaleDateString("en-IN", {
+            month: "short"
+        });
+
+        return `
+            <div class="bar-column"
+                 title="${counts[index]} event(s) in ${label}">
+                <div class="bar-track">
+                    <div class="bar"
+                         style="height:${height}%"
+                         aria-label="${counts[index]} events"></div>
+                </div>
+                <span class="bar-label">${label}</span>
+            </div>
+        `;
+    }).join("");
+}
+
+function getFilteredEvents() {
+    const search = $("globalSearch").value.trim().toLowerCase();
+
+    return events.filter(event => {
+        const status = normalizeStatus(event.status);
+        const matchesStatus =
+            activeFilter === "ALL" || status === activeFilter;
+
+        const searchableText = [
+            event.eventName,
+            event.venue,
+            event.organizer,
+            event.description
+        ].join(" ").toLowerCase();
+
+        return matchesStatus && searchableText.includes(search);
+    });
+}
+
+function renderEvents() {
+    const filtered = getFilteredEvents();
+
+    $("resultCount").textContent =
+        `${filtered.length} event${filtered.length === 1 ? "" : "s"}`;
+
+    if (filtered.length === 0) {
+        $("eventGrid").innerHTML = `
+            <div class="empty-state">
+                <strong>No events found</strong><br>
+                Try another search or create a new event.
+            </div>
+        `;
+        return;
+    }
+
+    const symbols = ["✦", "♫", "◈", "✺", "▦", "✧"];
+
+    $("eventGrid").innerHTML = filtered.map((event, index) => {
+        const status = normalizeStatus(event.status);
+        const id = Number(event.eventId);
+        const cover = Math.abs(events.indexOf(event)) % symbols.length;
+
+        return `
+            <article class="event-card">
+                <div class="event-cover cover-${cover}">
+                    <span class="cover-symbol">${symbols[cover]}</span>
+                    <span class="status-pill">${escapeHtml(status)}</span>
+                </div>
+
+                <div class="event-body">
+                    <div class="event-date">
+                        ${escapeHtml(formatShortDate(event.eventDate))}
+                    </div>
+
+                    <div class="event-title">
+                        ${escapeHtml(event.eventName || "Untitled event")}
+                    </div>
+
+                    <div class="event-desc">
+                        ${escapeHtml(event.description || "No description added.")}
+                    </div>
+
+                    <div class="event-meta">
+                        <span>⌖ &nbsp;${escapeHtml(event.venue || "Venue not specified")}</span>
+                        <span>◉ &nbsp;${escapeHtml(event.organizer || "Organizer not specified")}</span>
+                    </div>
+
+                    <div class="event-card-footer">
+                        <span class="organizer">ID: ${escapeHtml(event.eventId)}</span>
+                        <div class="card-actions">
+                            <button class="action-btn"
+                                data-action="edit" data-id="${id}">Edit</button>
+                            <button class="action-btn delete"
+                                data-action="delete" data-id="${id}">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        `;
+    }).join("");
+}
+
+function renderAll() {
+    updateStatistics();
+    renderMonthlyChart();
+    renderEvents();
+}
+
+async function loadEvents() {
+    $("eventGrid").innerHTML =
+        '<div class="empty-state">Loading events...</div>';
+
+    try {
+        const data = await apiRequest(API_URL);
+        events = Array.isArray(data) ? data : [];
+        renderAll();
+    } catch (error) {
+        $("eventGrid").innerHTML = `
+            <div class="empty-state">
+                <strong>Unable to load events</strong><br>
+                Make sure Spring Boot is running on port 8085.
+                <br>Details: ${escapeHtml(error.message)}
+            </div>
+        `;
+
+        updateStatistics();
+        renderMonthlyChart();
+        showToast("Could not load events. Check Spring Boot.", true);
+    }
+}
+
+function openCreateDialog() {
+    $("eventForm").reset();
+    $("eventId").value = "";
+    $("dialogTitle").textContent = "Create an event";
+    $("saveBtn").textContent = "Create Event";
+    $("eventDialog").showModal();
+    $("eventName").focus();
+}
+
+function openEditDialog(id) {
+    const event = events.find(item => Number(item.eventId) === id);
+
+    if (!event) {
+        showToast("Event not found. Refresh and try again.", true);
+        return;
+    }
+
+    $("eventId").value = event.eventId;
+    $("eventName").value = event.eventName || "";
+
+    const date = parseDate(event.eventDate);
+    $("eventDate").value = date
+        ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+        : "";
+
+    $("venue").value = event.venue || "";
+    $("organizer").value = event.organizer || "";
+    $("status").value = normalizeStatus(event.status);
+    $("description").value = event.description || "";
+
+    $("dialogTitle").textContent = "Edit event";
+    $("saveBtn").textContent = "Save Changes";
+    $("eventDialog").showModal();
+}
+
+function closeDialog() {
+    $("eventDialog").close();
+    $("eventForm").reset();
+    $("eventId").value = "";
+}
+
+$("eventForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const id = $("eventId").value;
+
+    const data = {
+        eventName: $("eventName").value.trim(),
+        eventDate: $("eventDate").value,
+        venue: $("venue").value.trim(),
+        organizer: $("organizer").value.trim(),
+        status: $("status").value,
+        description: $("description").value.trim()
+    };
+
+    if (!data.eventName || !data.eventDate || !data.venue) {
+        showToast("Enter the event name, date and venue.", true);
+        return;
+    }
+
+    $("saveBtn").disabled = true;
+    $("saveBtn").textContent = "Saving...";
+
+    try {
+        if (id) {
+            await apiRequest(`${API_URL}/${encodeURIComponent(id)}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            showToast("Event updated successfully.");
+        } else {
+            await apiRequest(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            showToast("Event created successfully.");
+        }
+
+        closeDialog();
+        await loadEvents();
+    } catch (error) {
+        showToast("Could not save event: " + error.message, true);
+    } finally {
+        $("saveBtn").disabled = false;
+        $("saveBtn").textContent = $("eventId").value
+            ? "Save Changes" : "Create Event";
+    }
+});
+
+
+
+async function deleteEvent(id) {
+    const eventId = Number(id);
+
+    const event = events.find(
+        item => Number(item.eventId) === eventId
+    );
+
+    if (!event) {
+        showToast("Event not found. Refreshing events.", true);
+        await loadEvents();
+        return;
+    }
+
+    if (!confirm(`Delete "${event.eventName}"? This cannot be undone.`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            `${API_URL}/${encodeURIComponent(eventId)}`,
+            { method: "DELETE" }
+        );
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || `HTTP ${response.status}`);
+        }
+
+        // The backend returns plain text, not JSON.
+        await response.text();
+
+        showToast("Event deleted successfully.");
+        await loadEvents();
+    } catch (error) {
+        showToast("Could not delete event: " + error.message, true);
+        await loadEvents();
+    }
+}
+
+$("eventGrid").addEventListener("click", event => {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+
+    const id = Number(button.dataset.id);
+    if (!Number.isFinite(id)) return;
+
+    if (button.dataset.action === "edit") openEditDialog(id);
+    if (button.dataset.action === "delete") deleteEvent(id);
+});
+
+$("filterBar").addEventListener("click", event => {
+    const button = event.target.closest("button[data-filter]");
+    if (!button) return;
+
+    activeFilter = button.dataset.filter;
+
+    document.querySelectorAll(".filter-chip").forEach(chip => {
+        chip.classList.toggle("active", chip === button);
+    });
+
+    renderEvents();
+});
+
+$("globalSearch").addEventListener("input", renderEvents);
+$("newEventBtn").addEventListener("click", openCreateDialog);
+
+$("sidebarAdd").addEventListener("click", event => {
+    event.preventDefault();
+    openCreateDialog();
+});
+
+$("refreshBtn").addEventListener("click", loadEvents);
+$("closeDialog").addEventListener("click", closeDialog);
+$("cancelForm").addEventListener("click", closeDialog);
+
+$("eventDialog").addEventListener("click", event => {
+    if (event.target === $("eventDialog")) closeDialog();
+});
+
+function setTheme(dark) {
+    document.body.classList.toggle("dark", dark);
+    $("themeToggle").textContent = dark ? "☀" : "☾";
+    $("themeToggle").title = dark ? "Switch to light mode" : "Switch to dark mode";
+
+    try {
+        localStorage.setItem("evently-theme", dark ? "dark" : "light");
+    } catch (_) {}
+}
+
+function toggleTheme() {
+    setTheme(!document.body.classList.contains("dark"));
+}
+
+try {
+    setTheme(localStorage.getItem("evently-theme") === "dark");
+} catch (_) {
+    setTheme(false);
+}
+
+$("themeToggle").addEventListener("click", toggleTheme);
+
+document.querySelectorAll(".nav-link[href^='#']").forEach(link => {
+    link.addEventListener("click", () => {
+        document.querySelectorAll(".nav-link[href^='#']").forEach(item => {
+            item.classList.toggle("active", item === link);
+        });
+    });
+});
+
+loadEvents();
+</script>
+
+
+<section id="registration-section" style="max-width:600px;margin:40px auto;padding:24px;border:1px solid #ddd;border-radius:12px;font-family:Arial,sans-serif;">
+    <h2>Event Registration</h2>
+    <p>Enter your details to register for an event.</p>
+
+    <form id="registrationForm">
+        <label for="studentName">Student Name</label>
+        <input
+            type="text"
+            id="studentName"
+            name="studentName"
+            required
+            maxlength="100"
+            style="display:block;width:100%;padding:10px;margin:8px 0 16px;box-sizing:border-box;"
+        >
+
+        <label for="studentEmail">Student Email</label>
+        <input
+            type="email"
+            id="studentEmail"
+            name="studentEmail"
+            required
+            maxlength="150"
+            style="display:block;width:100%;padding:10px;margin:8px 0 16px;box-sizing:border-box;"
+        >
+
+       <label for="registrationEventId">Select Event</label>
+<select
+    id="registrationEventId"
+    name="eventId"
+    required
+    style="display:block;width:100%;padding:10px;margin:8px 0 16px;box-sizing:border-box;"
+>
+    <option value="">Loading events...</option>
+</select>
+
+        <button type="submit" id="registerButton"
+            style="padding:12px 20px;background:#2563eb;color:white;border:0;border-radius:6px;cursor:pointer;">
+            Register
+        </button>
+
+        <p id="registrationMessage" role="status" aria-live="polite"></p>
+    </form>
+</section>
+
+
+
+<script>
+"use strict";
+
+const registrationForm = document.getElementById("registrationForm");
+const registrationEventSelect = document.getElementById("registrationEventId");
+const registrationMessage = document.getElementById("registrationMessage");
+const registrationButton = document.getElementById("registerButton");
+const registrationsTableBody = document.getElementById("registrationsTableBody");
+const registrationCounts = document.getElementById("registrationCounts");
+const registrationTotal = document.getElementById("registrationTotal");
+
+let registrationEvents = [];
+let registrations = [];
+let currentRegistrationPage = 1;
+let registrationPageSize = 10;
+
+function registrationEscape(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[character]);
+}
+
+function registrationEventName(eventId) {
+    const found = registrationEvents.find(
+        item => Number(item.eventId) === Number(eventId)
+    );
+
+    return found ? found.eventName : `Event ID ${eventId}`;
+}
+
+// Load events into the registration form and event filter.
+async function loadRegistrationEvents() {
+    registrationEventSelect.innerHTML =
+        '<option value="">Loading events...</option>';
+
+    try {
+        const response = await fetch("/api/events");
+
+        if (!response.ok) {
+            throw new Error(`Could not load events (HTTP ${response.status})`);
+        }
+
+        const data = await response.json();
+        registrationEvents = Array.isArray(data) ? data : [];
+
+        if (registrationEvents.length === 0) {
+            registrationEventSelect.innerHTML =
+                '<option value="">No events available</option>';
+        } else {
+            registrationEventSelect.innerHTML =
+                '<option value="">-- Select an event --</option>' +
+                registrationEvents.map(event => `
+                    <option value="${registrationEscape(event.eventId)}">
+                        ${registrationEscape(event.eventName)}
+                        (ID: ${registrationEscape(event.eventId)})
+                    </option>
+                `).join("");
+        }
+
+        populateRegistrationEventFilter();
+        renderRegistrationCounts();
+        renderRegistrationsTable();
+
+    } catch (error) {
+        registrationEventSelect.innerHTML =
+            '<option value="">Unable to load events</option>';
+
+        registrationMessage.textContent = error.message;
+    }
+}
+
+// Populate the event filter while preserving its selection.
+function populateRegistrationEventFilter() {
+    const filter = document.getElementById("registrationEventFilter");
+    const previousValue = filter.value;
+
+    filter.innerHTML =
+        '<option value="ALL">All Events</option>' +
+        registrationEvents.map(event => `
+            <option value="${registrationEscape(event.eventId)}">
+                ${registrationEscape(event.eventName)}
+            </option>
+        `).join("");
+
+    if ([...filter.options].some(option => option.value === previousValue)) {
+        filter.value = previousValue;
+    }
+}
+
+// Show registration totals for each event.
+function renderRegistrationCounts() {
+    if (registrationEvents.length === 0) {
+        registrationCounts.innerHTML =
+            '<div class="panel">No events available.</div>';
+        return;
+    }
+
+    registrationCounts.innerHTML = registrationEvents.map(event => {
+        const count = registrations.filter(
+            registration =>
+                Number(registration.eventId) === Number(event.eventId)
+        ).length;
+
+        return `
+            <div class="stat">
+                <div class="stat-label">
+                    ${registrationEscape(event.eventName)}
+                </div>
+                <div class="stat-number">${count}</div>
+                <div class="stat-foot">
+                    ${count === 1 ? "registered student" : "registered students"}
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+// Search registrations and filter them by event.
+function getFilteredRegistrations() {
+    const search = document
+        .getElementById("registrationSearch")
+        .value.trim()
+        .toLowerCase();
+
+    const selectedEvent =
+        document.getElementById("registrationEventFilter").value;
+
+    return registrations.filter(registration => {
+        const name = String(registration.studentName || "").toLowerCase();
+        const email = String(registration.studentEmail || "").toLowerCase();
+
+        const matchesSearch =
+            name.includes(search) || email.includes(search);
+
+        const matchesEvent =
+            selectedEvent === "ALL" ||
+            Number(registration.eventId) === Number(selectedEvent);
+
+        return matchesSearch && matchesEvent;
+    });
+}
+
+// Render only the registrations belonging to the current page.
+
+function renderRegistrationsTable() {
+    const filteredRegistrations = getFilteredRegistrations();
+    const totalRegistrations = filteredRegistrations.length;
+
+    const totalPages = Math.max(
+        1,
+        Math.ceil(totalRegistrations / registrationPageSize)
+    );
+
+    currentRegistrationPage = Math.min(
+        Math.max(1, currentRegistrationPage),
+        totalPages
+    );
+
+    const startIndex =
+        (currentRegistrationPage - 1) * registrationPageSize;
+
+    const pageRegistrations = filteredRegistrations.slice(
+        startIndex,
+        startIndex + registrationPageSize
+    );
+
+    registrationTotal.textContent =
+        `${totalRegistrations} matching registration(s)`;
+
+    document.getElementById("registrationPageInfo").textContent =
+        `Page ${currentRegistrationPage} of ${totalPages}`;
+
+    document.getElementById("registrationPrevBtn").disabled =
+        currentRegistrationPage === 1;
+
+    document.getElementById("registrationNextBtn").disabled =
+        currentRegistrationPage === totalPages;
+
+    if (totalRegistrations === 0) {
+        registrationsTableBody.innerHTML = `
+            <tr>
+                <td colspan="5" style="padding:15px;">
+                    No matching registrations found.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    registrationsTableBody.innerHTML = pageRegistrations.map(registration => {
+        const eventName = registrationEventName(registration.eventId);
+        const rawDate = registration.registrationDate;
+        let formattedDate = "—";
+
+        if (rawDate) {
+            const parsedDate = new Date(rawDate);
+
+            formattedDate = Number.isNaN(parsedDate.getTime())
+                ? String(rawDate)
+                : parsedDate.toLocaleString("en-IN");
+        }
+
+        return `
+            <tr>
+                <td style="padding:12px;border-bottom:1px solid var(--border);">
+                    ${registrationEscape(registration.studentName)}
+                </td>
+                <td style="padding:12px;border-bottom:1px solid var(--border);">
+                    ${registrationEscape(registration.studentEmail)}
+                </td>
+                <td style="padding:12px;border-bottom:1px solid var(--border);">
+                    ${registrationEscape(eventName)}
+                </td>
+                <td style="padding:12px;border-bottom:1px solid var(--border);">
+                    ${registrationEscape(formattedDate)}
+                </td>
+                <td style="padding:12px;border-bottom:1px solid var(--border);white-space:nowrap;">
+                    <button type="button"
+                        onclick="editRegistration(${Number(registration.registrationId)})">
+                        Edit
+                    </button>
+                    <button type="button"
+                        onclick="deleteRegistration(${Number(registration.registrationId)})">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join("");
+}
+
+async function editRegistration(id) {
+    const registration = registrations.find(
+        item => Number(item.registrationId) === Number(id)
+    );
+
+    if (!registration) {
+        alert("Registration not found.");
+        return;
+    }
+
+    const studentName = prompt(
+        "Enter student name:",
+        registration.studentName
+    );
+
+    if (studentName === null) return;
+
+    const studentEmail = prompt(
+        "Enter student email:",
+        registration.studentEmail
+    );
+
+    if (studentEmail === null) return;
+
+    if (!studentName.trim() || !studentEmail.trim()) {
+        alert("Student name and email are required.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/registrations/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                studentName: studentName.trim(),
+                studentEmail: studentEmail.trim(),
+                eventId: registration.eventId
+            })
+        });
+
+        if (!response.ok) {
+            const message = await response.text();
+            throw new Error(message || "Update failed.");
+        }
+
+        alert("Registration updated successfully.");
+        await loadRegistrations();
+    } catch (error) {
+        alert("Could not update registration: " + error.message);
+    }
+}
+
+async function deleteRegistration(id) {
+    const registration = registrations.find(
+        item => Number(item.registrationId) === Number(id)
+    );
+
+    if (!registration) {
+        alert("Registration not found.");
+        return;
+    }
+
+    if (!confirm(
+        `Delete registration for ${registration.studentName}?`
+    )) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/registrations/${id}`, {
+            method: "DELETE"
+        });
+
+        if (!response.ok) {
+            const message = await response.text();
+            throw new Error(message || "Delete failed.");
+        }
+
+        alert("Registration deleted successfully.");
+        await loadRegistrations();
+    } catch (error) {
+        alert("Could not delete registration: " + error.message);
+    }
+}
+
+
+// Load registrations from the backend.
+async function loadRegistrations() {
+    try {
+        const response = await fetch("/api/registrations");
+
+        if (!response.ok) {
+            throw new Error(
+                `Could not load registrations (HTTP ${response.status})`
+            );
+        }
+
+        const data = await response.json();
+        registrations = Array.isArray(data) ? data : [];
+
+        currentRegistrationPage = 1;
+        renderRegistrationCounts();
+        renderRegistrationsTable();
+
+    } catch (error) {
+        registrationMessage.textContent = error.message;
+        showToast("Could not load registrations: " + error.message, true);
+    }
+}
+
+// Submit a new student registration.
+registrationForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const studentName = document.getElementById("studentName").value.trim();
+    const studentEmail = document.getElementById("studentEmail").value.trim();
+    const eventId = registrationEventSelect.value;
+
+    if (!studentName || !studentEmail || !eventId) {
+        registrationMessage.textContent =
+            "Please enter your details and select an event.";
+        return;
+    }
+
+    registrationButton.disabled = true;
+    registrationButton.textContent = "Registering...";
+    registrationMessage.textContent = "";
+
+    try {
+        const response = await fetch("/api/registrations", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                studentName,
+                studentEmail,
+                eventId: Number(eventId)
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(
+                errorText || `Registration failed (HTTP ${response.status})`
+            );
+        }
+
+        registrationMessage.textContent =
+            "Registration successful!";
+
+        registrationForm.reset();
+
+        await loadRegistrations();
+
+        showToast("Student registered successfully.");
+
+    } catch (error) {
+        registrationMessage.textContent =
+            "Registration failed: " + error.message;
+    } finally {
+        registrationButton.disabled = false;
+        registrationButton.textContent = "Register";
+    }
+});
+
+// Search: reset to page 1 whenever the search changes.
+document.getElementById("registrationSearch")
+    .addEventListener("input", () => {
+        currentRegistrationPage = 1;
+        renderRegistrationsTable();
+    });
+
+// Event filter: reset to page 1 whenever the filter changes.
+document.getElementById("registrationEventFilter")
+    .addEventListener("change", () => {
+        currentRegistrationPage = 1;
+        renderRegistrationsTable();
+    });
+
+// Previous page.
+document.getElementById("registrationPrevBtn")
+    .addEventListener("click", () => {
+        if (currentRegistrationPage > 1) {
+            currentRegistrationPage--;
+            renderRegistrationsTable();
+        }
+    });
+
+// Next page.
+document.getElementById("registrationNextBtn")
+    .addEventListener("click", () => {
+        const totalPages = Math.max(
+            1,
+            Math.ceil(
+                getFilteredRegistrations().length / registrationPageSize
+            )
+        );
+
+        if (currentRegistrationPage < totalPages) {
+            currentRegistrationPage++;
+            renderRegistrationsTable();
+        }
+    });
+
+// Change the number of rows displayed per page.
+document.getElementById("registrationPageSize")
+    .addEventListener("change", event => {
+        registrationPageSize = Number(event.target.value);
+        currentRegistrationPage = 1;
+        renderRegistrationsTable();
+    });
+
+// Export all matching registrations, including those on other pages.
+function exportRegistrationsToCSV() {
+    const filteredRegistrations = getFilteredRegistrations();
+
+    if (filteredRegistrations.length === 0) {
+        registrationMessage.textContent =
+            "There are no registrations to export.";
+        return;
+    }
+
+    function csvCell(value) {
+        return '"' + String(value ?? "").replace(/"/g, '""') + '"';
+    }
+
+    const rows = [
+        ["Student Name", "Email", "Event", "Registration Date"],
+        ...filteredRegistrations.map(registration => [
+            registration.studentName,
+            registration.studentEmail,
+            registrationEventName(registration.eventId),
+            registration.registrationDate || ""
+        ])
+    ];
+
+    const csv = "\uFEFF" + rows
+        .map(row => row.map(csvCell).join(","))
+        .join("\r\n");
+
+    const blob = new Blob([csv], {
+        type: "text/csv;charset=utf-8;"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "student-registrations.csv";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+
+    registrationMessage.textContent =
+        `${filteredRegistrations.length} registration(s) exported successfully.`;
+}
+
+document.getElementById("exportRegistrationsBtn")
+    .addEventListener("click", exportRegistrationsToCSV);
+
+// Refresh registrations.
+document.getElementById("refreshRegistrationsBtn")
+    .addEventListener("click", async () => {
+        await loadRegistrationEvents();
+        await loadRegistrations();
+        showToast("Registration data refreshed.");
+    });
+
+// Initialize the registration dashboard.
+async function initializeRegistrationDashboard() {
+    await loadRegistrationEvents();
+    await loadRegistrations();
+}
+
+initializeRegistrationDashboard();
+</script>
+
+
+</body>
+</html>
